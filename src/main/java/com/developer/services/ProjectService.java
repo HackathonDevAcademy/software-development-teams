@@ -31,7 +31,7 @@ public class ProjectService {
 
     public Long updateProject(Long id, Project updatedProject) {
         Project project = projectRepository.findById(id).orElse(null);
-        if(project == null)
+        if (project == null)
             return null;
 
         project.setName(updatedProject.getName());
@@ -39,7 +39,7 @@ public class ProjectService {
         project.setStartDate(updatedProject.getStartDate());
         project.setEndDate(updatedProject.getEndDate());
         project.setTeam(updatedProject.getTeam());
-        project.setDevelopers(updatedProject.getDevelopers());
+//        project.setDevelopers(updatedProject.getDevelopers());
 
         return projectRepository.save(project).getId();
     }

@@ -1,5 +1,7 @@
 package com.developer.controllers;
 
+import com.developer.dto.TeamDTO;
+import com.developer.mapper.TeamMapper;
 import com.developer.models.Team;
 import com.developer.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,32 +9,36 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/team")
 public class TeamController {
 
     private final TeamService teamService;
+    private final TeamMapper teamMapper;
 
     @Autowired
-    public TeamController(TeamService teamService) {
+    public TeamController(TeamService teamService, TeamMapper teamMapper) {
         this.teamService = teamService;
+        this.teamMapper = teamMapper;
     }
 
     @GetMapping
-    public List<Team> getAllTeams() {
-        return teamService.getAllTeams();
+    public List<TeamDTO> getAllTeams() {
+        return teamService.getAllTeams().stream().map(
+                teamMapper::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Team getTeamById(@PathVariable Long id) {
-        return teamService.getTeamById(id);
+    public TeamDTO getTeamById(@PathVariable Long id) {
+        return teamMapper.convertToDTO(teamService.getTeamById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveTeam(@RequestBody Team team) {
-        teamService.saveTeam(team);
+    public Long saveTeam(@RequestBody Team team) {
+        return teamService.saveTeam(team);
     }
 
     @PutMapping("/{id}")

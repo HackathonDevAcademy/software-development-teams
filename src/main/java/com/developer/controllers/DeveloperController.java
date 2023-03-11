@@ -1,5 +1,7 @@
 package com.developer.controllers;
 
+import com.developer.dto.DeveloperDTO;
+import com.developer.mapper.DeveloperMapper;
 import com.developer.models.Developer;
 import com.developer.services.DeveloperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,30 +9,35 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/developer")
 public class DeveloperController {
+
     private final DeveloperService developerService;
+    private final DeveloperMapper developerMapper;
 
     @Autowired
-    public DeveloperController(DeveloperService developerService) {
+    public DeveloperController(DeveloperService developerService, DeveloperMapper developerMapper) {
         this.developerService = developerService;
+        this.developerMapper = developerMapper;
     }
 
     @GetMapping
-    public List<Developer> getAllDevelopers() {
-        return developerService.getAllDevelopers();
+    public List<DeveloperDTO> getAllDevelopers() {
+        return developerService.getAllDevelopers().stream().map(
+                developerMapper::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Developer getDeveloperById(@PathVariable Long id) {
-        return developerService.getDeveloperById(id);
+    public DeveloperDTO getDeveloperById(@PathVariable Long id) {
+        return developerMapper.convertToDTO(developerService.getDeveloperById(id));
     }
 
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public Developer createDeveloper(@RequestBody Developer developer) {
+    public Long createDeveloper(@RequestBody Developer developer) {
         return developerService.saveDeveloper(developer);
     }
 
@@ -42,8 +49,8 @@ public class DeveloperController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteDeveloperById(@PathVariable Long id) {
-        developerService.deleteDeveloperById(id);
+    public Long deleteDeveloperById(@PathVariable Long id) {
+        return developerService.deleteDeveloperById(id);
     }
 }
 

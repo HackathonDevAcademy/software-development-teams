@@ -37,8 +37,8 @@ public class Developer {
     @ManyToMany(mappedBy = "developers")
     private List<Team> teams;
 
-    @ManyToMany(mappedBy = "developers")
-    private List<Project> projects;
+//    @ManyToMany(mappedBy = "developers")
+//    private List<Project> projects;
 
     @OneToMany(mappedBy = "developer")
     private List<Task> tasks;

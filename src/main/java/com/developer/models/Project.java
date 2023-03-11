@@ -36,12 +36,12 @@ public class Project {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @ManyToMany
-    @JoinTable(
-            name = "project_developer",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "developer_id"))
-    private List<Developer> developers;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "project_developer",
+//            joinColumns = @JoinColumn(name = "project_id"),
+//            inverseJoinColumns = @JoinColumn(name = "developer_id"))
+//    private List<Developer> developers;
 
     @OneToMany(mappedBy = "project")
     private List<Task> tasks;

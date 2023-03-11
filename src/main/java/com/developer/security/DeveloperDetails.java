@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class DeveloperDetails implements UserDetails {
-    private Developer developer;
+    private final Developer developer;
 
     public DeveloperDetails(Developer developer) {
         this.developer = developer;

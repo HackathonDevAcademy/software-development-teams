@@ -26,13 +26,13 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
-    public Task save(Task task) {
-        return taskRepository.save(task);
+    public Long save(Task task) {
+        return taskRepository.save(task).getId();
     }
 
     public Long updateTask(Long id, Task updatedTask) {
         Task task = taskRepository.findById(id).orElse(null);
-        if(task == null)
+        if (task == null)
             return null;
 
         task.setName(updatedTask.getName());
