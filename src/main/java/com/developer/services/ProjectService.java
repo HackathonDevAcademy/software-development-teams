@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -38,7 +37,7 @@ public class ProjectService {
         project.setDescription(updatedProject.getDescription());
         project.setStartDate(updatedProject.getStartDate());
         project.setEndDate(updatedProject.getEndDate());
-        project.setTeam(updatedProject.getTeam());
+//        project.setTeam(updatedProject.getTeam());
 //        project.setDevelopers(updatedProject.getDevelopers());
 
         return projectRepository.save(project).getId();

@@ -45,5 +45,9 @@ public class Task {
     @JoinColumn(name = "developer_id", referencedColumnName = "id")
     private Developer developer;
 
+    @ManyToOne
+    @JoinColumn(name = "report_id", referencedColumnName = "id")
+    private Report report;
+
 }
 

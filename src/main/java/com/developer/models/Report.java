@@ -36,11 +36,11 @@ public class Report {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @ManyToMany
-    @JoinTable(
-            name = "report_task",
-            joinColumns = @JoinColumn(name = "report_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id"))
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private Developer createdBy;
+
+    @OneToMany(mappedBy = "report")
     private List<Task> completedTasks;
 }
 
