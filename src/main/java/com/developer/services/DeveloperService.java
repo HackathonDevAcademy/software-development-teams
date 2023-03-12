@@ -1,5 +1,6 @@
 package com.developer.services;
 
+import com.developer.enums.Role;
 import com.developer.models.Developer;
 import com.developer.repositories.DeveloperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DeveloperService {
@@ -29,7 +31,7 @@ public class DeveloperService {
 
     public Long saveDeveloper(Developer developer) {
         developer.setPassword(passwordEncoder.encode(developer.getPassword()));
-        developer.setRole("ROLE_USER");
+        developer.setRole(Role.ROLE_USER);
         return developerRepository.save(developer).getId();
     }
 
@@ -46,12 +48,16 @@ public class DeveloperService {
         existingDeveloper.setEmail(developer.getEmail());
         existingDeveloper.setPassword(developer.getPassword());
         existingDeveloper.setRole(developer.getRole());
-        existingDeveloper.setFirstName(developer.getFirstName());
-        existingDeveloper.setLastName(developer.getLastName());
+        existingDeveloper.setFullName(developer.getFullName());
         existingDeveloper.setPosition(developer.getPosition());
         existingDeveloper.setTeams(developer.getTeams());
 //        existingDeveloper.setProjects(developer.getProjects());
         existingDeveloper.setTasks(developer.getTasks());
         return developerRepository.save(existingDeveloper).getId();
     }
+
+    public Optional<Developer> findByEmail(String email) {
+        return developerRepository.findByEmail(email);
+    }
+
 }

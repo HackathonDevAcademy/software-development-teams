@@ -31,7 +31,4 @@ public class Team {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id"))
     private List<Developer> developers;
-
-    @Column(name = "contact_info")
-    private String contactInfo;
 }

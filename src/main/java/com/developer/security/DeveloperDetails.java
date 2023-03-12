@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class DeveloperDetails implements UserDetails {
-    private final Developer developer;
+    private Developer developer;
 
     public DeveloperDetails(Developer developer) {
         this.developer = developer;
@@ -17,7 +17,7 @@ public class DeveloperDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(developer.getRole()));
+        return Collections.singletonList(new SimpleGrantedAuthority(String.valueOf(developer.getRole())));
     }
 
     @Override
@@ -48,5 +48,9 @@ public class DeveloperDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Developer getDeveloper() {
+        return this.developer;
     }
 }

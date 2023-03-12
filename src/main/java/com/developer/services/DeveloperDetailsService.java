@@ -1,7 +1,8 @@
-package com.developer.security;
+package com.developer.services;
 
 import com.developer.models.Developer;
 import com.developer.repositories.DeveloperRepository;
+import com.developer.security.DeveloperDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

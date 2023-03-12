@@ -1,7 +1,10 @@
 package com.developer.dto;
 
+import com.developer.enums.TaskStatus;
 import lombok.Data;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDate;
 
 @Data
@@ -11,5 +14,6 @@ public class TaskDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private String priority;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 }

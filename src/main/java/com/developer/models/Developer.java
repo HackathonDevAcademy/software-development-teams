@@ -1,8 +1,14 @@
 package com.developer.models;
 
-import lombok.*;
+import com.developer.enums.Role;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
@@ -16,20 +22,22 @@ public class Developer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Имя не может быть пустым!")
     @Column(name = "first_name")
-    private String firstName;
+    private String fullName;
 
-    @Column(name = "last_name")
-    private String lastName;
-
+    @Email(message = "Не корректный email!")
+    @NotBlank(message = "Email не может быть пустым!")
     @Column(name = "email", unique = true)
     private String email;
 
+    @NotBlank(message = "Пароль не может быть пустым!")
     @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private String role;
+    private Role role;
 
     @Column(name = "position")
     private String position;
@@ -42,4 +50,5 @@ public class Developer {
 
     @OneToMany(mappedBy = "developer")
     private List<Task> tasks;
+
 }

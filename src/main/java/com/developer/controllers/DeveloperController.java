@@ -35,12 +35,6 @@ public class DeveloperController {
         return developerMapper.convertToDTO(developerService.getDeveloperById(id));
     }
 
-    @PostMapping("/save")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Long createDeveloper(@RequestBody Developer developer) {
-        return developerService.saveDeveloper(developer);
-    }
-
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Long updateDeveloper(@PathVariable Long id, @RequestBody Developer developer) {

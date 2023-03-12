@@ -1,5 +1,6 @@
 package com.developer.services;
 
+import com.developer.enums.TaskStatus;
 import com.developer.models.Task;
 import com.developer.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class TaskService {
     }
 
     public Long save(Task task) {
+        task.setStatus(TaskStatus.NEW);
         return taskRepository.save(task).getId();
     }
 

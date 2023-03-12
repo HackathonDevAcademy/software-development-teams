@@ -41,7 +41,6 @@ public class TeamService {
         existingTeam.setName(team.getName());
         existingTeam.setDescription(team.getDescription());
         existingTeam.setDevelopers(team.getDevelopers());
-        existingTeam.setContactInfo(team.getContactInfo());
         return teamRepository.save(existingTeam).getId();
     }
 
