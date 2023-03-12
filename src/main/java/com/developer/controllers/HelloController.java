@@ -16,23 +16,6 @@ public class HelloController {
     public String sayHello() {
         return "hello";
     }
-
-    @GetMapping("/showUserInfo")
-    public String showUserInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        DeveloperDetails developerDetails = (DeveloperDetails) authentication.getPrincipal();
-
-        return developerDetails.getDeveloper().getFullName() + ", " + developerDetails.getUsername();
-    }
-
-    @GetMapping("/test")
-    public String test(@AuthenticationPrincipal DeveloperDetails developerDetails) {
-        return developerDetails.getDeveloper().getFullName() + ", " + developerDetails.getUsername();
-    }
-
-    @GetMapping("/test2")
-    public String test2(@CurrentDeveloper Developer developer) {
-        return developer.getFullName() + ", " + developer.getEmail();
-    }
+    
 
 }
