@@ -42,10 +42,11 @@ public class Developer {
     @Column(name = "position")
     private String position;
 
-    @ManyToMany(mappedBy = "developers")
-    private List<Team> teams;
+    @ManyToOne
+    @JoinColumn(name = "team_id", referencedColumnName = "id")
+    private Team team;
 
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "developer")
     private List<Report> reports;
 
     @OneToMany(mappedBy = "developer")

@@ -1,56 +1,65 @@
 package com.developer.services;
 
-import com.developer.enums.TaskStatus;
+import com.developer.models.Developer;
 import com.developer.models.Task;
+import com.developer.repositories.DeveloperRepository;
 import com.developer.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
-
     private final TaskRepository taskRepository;
+    private final DeveloperRepository developerRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, DeveloperRepository developerRepository) {
         this.taskRepository = taskRepository;
+        this.developerRepository = developerRepository;
     }
 
-    public List<Task> findAll() {
+    public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
-    public Optional<Task> findById(Long id) {
-        return taskRepository.findById(id);
+    public Task getTaskById(Long id) {
+        return taskRepository.findById(id).orElse(null);
     }
 
-    public Long save(Task task) {
-        task.setStatus(TaskStatus.NEW);
+    public Long saveTask(Long id, Task task) {
+        task.setDeveloper(developerRepository.findById(id).orElse(null));
         return taskRepository.save(task).getId();
     }
 
-    public Long updateTask(Long id, Task updatedTask) {
-        Task task = taskRepository.findById(id).orElse(null);
-        if (task == null)
-            return null;
-
-        task.setName(updatedTask.getName());
-        task.setDescription(updatedTask.getDescription());
-        task.setStartDate(updatedTask.getStartDate());
-        task.setEndDate(updatedTask.getEndDate());
-        task.setPriority(updatedTask.getPriority());
-        task.setStatus(updatedTask.getStatus());
-        task.setProject(updatedTask.getProject());
-        task.setDeveloper(updatedTask.getDeveloper());
-
-        return taskRepository.save(task).getId();
-    }
-
-    public Long deleteById(Long id) {
+    public Long deleteTask(Long id) {
         taskRepository.deleteById(id);
         return id;
     }
+
+    public Long updateTask(Long id, Task newTask) {
+        Task taskToUpdate = taskRepository.findById(id).orElse(null);
+        if(taskToUpdate == null)
+            return null;
+
+        taskToUpdate.setTitle(newTask.getTitle());
+        taskToUpdate.setDescription(newTask.getDescription());
+        taskToUpdate.setStartDate(newTask.getStartDate());
+        taskToUpdate.setEndDate(newTask.getEndDate());
+        taskToUpdate.setStatus(newTask.getStatus());
+        taskToUpdate.setDeveloper(newTask.getDeveloper());
+        taskToUpdate.setReport(newTask.getReport());
+
+        return taskRepository.save(taskToUpdate).getId();
+    }
+
 }
+
+
+
+
+
+
+
+        }

@@ -2,6 +2,6 @@ package com.developer.enums;
 
 public enum TaskStatus {
     NEW,
-    PROGRESS,
+    IN_PROGRESS,
     FINISH
 }

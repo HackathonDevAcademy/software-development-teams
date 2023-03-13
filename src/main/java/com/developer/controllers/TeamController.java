@@ -2,14 +2,12 @@ package com.developer.controllers;
 
 import com.developer.dto.TeamDTO;
 import com.developer.mapper.TeamMapper;
-import com.developer.models.Team;
+import com.developer.security.DeveloperDetails;
 import com.developer.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/team")
@@ -24,10 +22,10 @@ public class TeamController {
         this.teamMapper = teamMapper;
     }
 
-    @GetMapping
-    public List<TeamDTO> getAllTeams() {
-        return teamService.getAllTeams().stream().map(
-                teamMapper::convertToDTO).collect(Collectors.toList());
+    @GetMapping("/current")
+    public TeamDTO getByDevId(@AuthenticationPrincipal DeveloperDetails developerDetails) {
+        return teamMapper.convertToDTO(
+                teamService.findByDeveloperId(developerDetails.getDeveloper().getId()));
     }
 
     @GetMapping("/{id}")
@@ -37,20 +35,15 @@ public class TeamController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long saveTeam(@RequestBody Team team) {
-        return teamService.saveTeam(team);
+    public Long saveTeam(@RequestBody TeamDTO teamDTO) {
+        return teamService.saveTeam(teamMapper.convertToEntity(teamDTO));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Long updateTeam(@PathVariable Long id, @RequestBody Team team) {
-        return teamService.updateTeam(id, team);
+    public Long updateTeam(@PathVariable Long id, @RequestBody TeamDTO teamDTO) {
+        return teamService.updateTeam(id, teamMapper.convertToEntity(teamDTO));
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Long deleteTeamById(@PathVariable Long id) {
-        return teamService.deleteTeamById(id);
-    }
 }
 

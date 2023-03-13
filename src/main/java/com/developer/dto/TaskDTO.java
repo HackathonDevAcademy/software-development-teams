@@ -5,15 +5,14 @@ import lombok.Data;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class TaskDTO {
-    private String name;
+    private String title;
     private String description;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String priority;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 }

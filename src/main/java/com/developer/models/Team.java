@@ -25,10 +25,6 @@ public class Team {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "team_developer",
-            joinColumns = @JoinColumn(name = "team_id"),
-            inverseJoinColumns = @JoinColumn(name = "developer_id"))
+    @OneToMany(mappedBy = "team")
     private List<Developer> developers;
 }

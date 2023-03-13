@@ -8,6 +8,5 @@ import java.time.LocalDate;
 public class ReportDTO {
     private String name;
     private String description;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDate date;
 }

@@ -50,9 +50,6 @@ public class DeveloperService {
         existingDeveloper.setRole(developer.getRole());
         existingDeveloper.setFullName(developer.getFullName());
         existingDeveloper.setPosition(developer.getPosition());
-        existingDeveloper.setTeams(developer.getTeams());
-//        existingDeveloper.setProjects(developer.getProjects());
-        existingDeveloper.setTasks(developer.getTasks());
         return developerRepository.save(existingDeveloper).getId();
     }
 
@@ -60,4 +57,7 @@ public class DeveloperService {
         return developerRepository.findByEmail(email);
     }
 
+    public List<Developer> findByTeamId(Long id) {
+        return developerRepository.findByTeamId(id);
+    }
 }

@@ -2,10 +2,11 @@ package com.developer.controllers;
 
 import com.developer.dto.ReportDTO;
 import com.developer.mapper.ReportMapper;
-import com.developer.models.Report;
+import com.developer.security.DeveloperDetails;
 import com.developer.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +25,9 @@ public class ReportController {
         this.reportMapper = reportMapper;
     }
 
-    @GetMapping
-    public List<ReportDTO> getAllReports() {
-        return reportService.findAll().stream().map(
+    @GetMapping("/all")
+    public List<ReportDTO> getByDevId(@AuthenticationPrincipal DeveloperDetails developerDetails) {
+        return reportService.findByCreatedById(developerDetails.getDeveloper().getId()).stream().map(
                 reportMapper::convertToDTO).collect(Collectors.toList());
     }
 
@@ -37,20 +38,17 @@ public class ReportController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createReport(@RequestBody Report report) {
-        return reportService.save(report);
+    public Long createReport(@RequestBody ReportDTO reportDTO,
+                             @AuthenticationPrincipal DeveloperDetails developerDetails) {
+        return reportService.save(developerDetails.getDeveloper().getId(),
+                reportMapper.convertToEntity(reportDTO));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Long updateReport(@RequestBody Report report, @PathVariable Long id) {
-        return reportService.updateReport(id, report);
+    public Long updateReport(@RequestBody ReportDTO reportDTO, @PathVariable Long id) {
+        return reportService.updateReport(id, reportMapper.convertToEntity(reportDTO));
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Long deleteReportById(@PathVariable Long id) {
-        return reportService.deleteById(id);
-    }
 }
 

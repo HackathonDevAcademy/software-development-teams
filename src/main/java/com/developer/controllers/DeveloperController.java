@@ -1,12 +1,12 @@
 package com.developer.controllers;
 
-import com.developer.annotations.CurrentDeveloper;
 import com.developer.dto.DeveloperDTO;
 import com.developer.mapper.DeveloperMapper;
-import com.developer.models.Developer;
+import com.developer.security.DeveloperDetails;
 import com.developer.services.DeveloperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,27 +25,24 @@ public class DeveloperController {
         this.developerMapper = developerMapper;
     }
 
-    @GetMapping
-    public List<DeveloperDTO> getAllDevelopers() {
-        return developerService.getAllDevelopers().stream().map(
+    @GetMapping("/current")
+    public DeveloperDTO getDeveloperById(@AuthenticationPrincipal DeveloperDetails developerDetails) {
+        return developerMapper.convertToDTO(
+                developerService.getDeveloperById(developerDetails.getDeveloper().getId()));
+    }
+
+    @GetMapping("/team/{id}")
+    public List<DeveloperDTO> getTeamDevelopers(@PathVariable Long id) {
+        return developerService.findByTeamId(id).stream().map(
                 developerMapper::convertToDTO).collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
-    public DeveloperDTO getDeveloperById(@PathVariable Long id) {
-        return developerMapper.convertToDTO(developerService.getDeveloperById(id));
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Long updateDeveloper(@AuthenticationPrincipal DeveloperDetails developerDetails, @RequestBody DeveloperDTO developerDTO) {
+        return developerService.updateDeveloper(developerDetails.getDeveloper().getId(),
+                developerMapper.convertToEntity(developerDTO));
     }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Long updateDeveloper(@PathVariable Long id, @RequestBody Developer developer) {
-        return developerService.updateDeveloper(id, developer);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Long deleteDeveloperById(@PathVariable Long id) {
-        return developerService.deleteDeveloperById(id);
-    }
 }
 

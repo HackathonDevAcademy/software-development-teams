@@ -26,21 +26,14 @@ public class Report {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    @Column(name = "end_date")
-    private LocalDate endDate;
-
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-    @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private Developer createdBy;
+    @Column(name = "date")
+    private LocalDate date;
 
     @OneToMany(mappedBy = "report")
-    private List<Task> completedTasks;
+    private List<Task> tasks;
+
+    @ManyToOne
+    @JoinColumn(name = "developer_id", referencedColumnName = "id")
+    private Developer developer;
 }
 
