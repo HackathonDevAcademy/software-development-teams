@@ -47,6 +47,9 @@ public class Developer {
     @Column(name = "status")
     private DevStatus status;
 
+    @Column(name = "activaton_token")
+    private String activationToken;
+
     @ManyToOne
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     private Team team;

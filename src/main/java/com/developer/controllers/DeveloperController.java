@@ -6,6 +6,7 @@ import com.developer.security.DeveloperDetails;
 import com.developer.services.DeveloperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,7 @@ public class DeveloperController {
         return developerService.updateDeveloper(developerDetails.getDeveloper().getId(),
                 developerMapper.convertToEntity(developerDTO));
     }
+
 
 }
 

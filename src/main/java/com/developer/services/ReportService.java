@@ -66,6 +66,10 @@ public class ReportService {
         return reportRepository.findByDeveloperId(id);
     }
 
+    public List<Report> findReportForTheWeek(Integer between) {
+        return reportRepository.findReportForTheWeek(between);
+    }
+
     public ResponseEntity<byte[]> exportToExcel() throws IOException {
         List<Report> reports = reportRepository.findAll();
 

@@ -1,7 +1,7 @@
 package com.developer.enums;
 
 public enum DevStatus {
-//    PENDING,
+    PENDING,
     ACTIVE,
     DELETED
 }
