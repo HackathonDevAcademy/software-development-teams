@@ -33,12 +33,6 @@ public class TeamController {
         return teamMapper.convertToDTO(teamService.getTeamById(id));
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Long saveTeam(@RequestBody TeamDTO teamDTO) {
-        return teamService.saveTeam(teamMapper.convertToEntity(teamDTO));
-    }
-
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Long updateTeam(@PathVariable Long id, @RequestBody TeamDTO teamDTO) {

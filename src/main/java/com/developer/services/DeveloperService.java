@@ -1,5 +1,6 @@
 package com.developer.services;
 
+import com.developer.enums.DevStatus;
 import com.developer.enums.Role;
 import com.developer.models.Developer;
 import com.developer.repositories.DeveloperRepository;
@@ -32,11 +33,16 @@ public class DeveloperService {
     public Long saveDeveloper(Developer developer) {
         developer.setPassword(passwordEncoder.encode(developer.getPassword()));
         developer.setRole(Role.ROLE_USER);
+        developer.setStatus(DevStatus.ACTIVE);
         return developerRepository.save(developer).getId();
     }
 
     public Long deleteDeveloperById(Long id) {
-        developerRepository.deleteById(id);
+        Developer developer = developerRepository.findById(id).orElse(null);
+        if(developer == null)
+            return null;
+
+        developer.setStatus(DevStatus.DELETED);
         return id;
     }
 
@@ -58,6 +64,6 @@ public class DeveloperService {
     }
 
     public List<Developer> findByTeamId(Long id) {
-        return developerRepository.findByTeamId(id);
+        return developerRepository.findByTeamIdAndStatus(id, DevStatus.ACTIVE);
     }
 }

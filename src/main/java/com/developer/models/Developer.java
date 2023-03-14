@@ -1,5 +1,6 @@
 package com.developer.models;
 
+import com.developer.enums.DevStatus;
 import com.developer.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,12 +36,16 @@ public class Developer {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "position")
+    private String position;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
 
-    @Column(name = "position")
-    private String position;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private DevStatus status;
 
     @ManyToOne
     @JoinColumn(name = "team_id", referencedColumnName = "id")

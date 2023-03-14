@@ -3,9 +3,17 @@ package com.developer.services;
 import com.developer.models.Report;
 import com.developer.repositories.DeveloperRepository;
 import com.developer.repositories.ReportRepository;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -56,5 +64,61 @@ public class ReportService {
 
     public List<Report> findByCreatedById(Long id) {
         return reportRepository.findByDeveloperId(id);
+    }
+
+    public ResponseEntity<byte[]> exportToExcel() throws IOException {
+        List<Report> reports = reportRepository.findAll();
+
+        // Создаем книгу Excel
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Reports");
+
+        // Задаем стиль заголовков
+        CellStyle headerStyle = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        headerStyle.setFont(font);
+
+        // Создаем заголовки столбцов
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("ID");
+        headerRow.createCell(1).setCellValue("Name");
+        headerRow.createCell(2).setCellValue("Description");
+        headerRow.createCell(3).setCellValue("Date");
+        headerRow.createCell(4).setCellValue("Developer");
+
+        // Устанавливаем стиль заголовков
+        for (Cell cell : headerRow) {
+            cell.setCellStyle(headerStyle);
+        }
+
+        // Заполняем таблицу данными
+        int rowNum = 1;
+        for (Report report : reports) {
+            Row row = sheet.createRow(rowNum++);
+
+            row.createCell(0).setCellValue(report.getId());
+            row.createCell(1).setCellValue(report.getName());
+            row.createCell(2).setCellValue(report.getDescription());
+            row.createCell(3).setCellValue(report.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+            row.createCell(4).setCellValue(report.getDeveloper().getFullName());
+        }
+
+        // Авторазмер столбцов
+        for (int i = 0; i < 5; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Переводим книгу Excel в массив байтов
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        workbook.write(outputStream);
+
+        // Формируем ответ с файлом Excel
+        byte[] bytes = outputStream.toByteArray();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "reports.xlsx");
+        headers.setContentLength(bytes.length);
+        return new ResponseEntity<>(bytes, headers, 200);
     }
 }

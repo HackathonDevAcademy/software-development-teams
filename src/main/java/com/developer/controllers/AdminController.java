@@ -81,15 +81,10 @@ public class AdminController {
         return teamService.deleteTeamById(id);
     }
 
-    @GetMapping("/task/all")
-    public List<TaskDTO> getAllTask() {
-        return taskService.getAllTasks().stream().map(
-                taskMapper::convertToDTO).collect(Collectors.toList());
-    }
-
-    @DeleteMapping("/task/{id}")
-    public Long deleteTask(@PathVariable Long id) {
-        return taskService.deleteTask(id);
+    @PostMapping("/team/new")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long saveTeam(@RequestBody TeamDTO teamDTO) {
+        return teamService.saveTeam(teamMapper.convertToEntity(teamDTO));
     }
 
     @GetMapping("/team/addDev/{devId}/{teamId}")
@@ -100,6 +95,18 @@ public class AdminController {
     @GetMapping("/team/deleteDev/{devId}/{teamId}")
     public Boolean deleteDevForTeam(@PathVariable Long devId, @PathVariable Long teamId) {
         return teamService.deleteDev(devId, teamId);
+    }
+
+    @GetMapping("/task/all")
+    public List<TaskDTO> getAllTask() {
+        return taskService.getAllTasks().stream().map(
+                taskMapper::convertToDTO).collect(Collectors.toList());
+    }
+
+
+    @DeleteMapping("/task/{id}")
+    public Long deleteTask(@PathVariable Long id) {
+        return taskService.deleteTask(id);
     }
 
 }

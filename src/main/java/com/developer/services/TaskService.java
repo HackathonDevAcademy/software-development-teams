@@ -1,6 +1,6 @@
 package com.developer.services;
 
-import com.developer.models.Developer;
+import com.developer.enums.TaskStatus;
 import com.developer.models.Task;
 import com.developer.repositories.DeveloperRepository;
 import com.developer.repositories.TaskRepository;
@@ -30,6 +30,7 @@ public class TaskService {
 
     public Long saveTask(Long id, Task task) {
         task.setDeveloper(developerRepository.findById(id).orElse(null));
+        task.setStatus(TaskStatus.NEW);
         return taskRepository.save(task).getId();
     }
 
@@ -56,10 +57,3 @@ public class TaskService {
 
 }
 
-
-
-
-
-
-
-        }
