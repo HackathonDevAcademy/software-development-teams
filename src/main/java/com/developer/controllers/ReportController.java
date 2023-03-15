@@ -57,7 +57,7 @@ public class ReportController {
         return reportService.exportToExcel();
     }
 
-    @GetMapping("/between/{amount}")
+    @GetMapping("/between/{amount}") // localhost:8080/report/between/5
     public List<ReportDTO> getByBetween(@PathVariable Integer amount) {
         return reportService.findReportForTheWeek(amount).stream().map(
                 reportMapper::convertToDTO).collect(Collectors.toList());

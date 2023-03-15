@@ -103,7 +103,6 @@ public class AdminController {
                 taskMapper::convertToDTO).collect(Collectors.toList());
     }
 
-
     @DeleteMapping("/task/{id}")
     public Long deleteTask(@PathVariable Long id) {
         return taskService.deleteTask(id);
