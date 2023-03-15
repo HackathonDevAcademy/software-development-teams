@@ -51,7 +51,6 @@ public class DeveloperService {
 
         existingDeveloper.setEmail(developer.getEmail());
         existingDeveloper.setPassword(developer.getPassword());
-        existingDeveloper.setRole(developer.getRole());
         existingDeveloper.setFullName(developer.getFullName());
         existingDeveloper.setPosition(developer.getPosition());
         return developerRepository.save(existingDeveloper).getId();
@@ -80,7 +79,7 @@ public class DeveloperService {
         return Collections.singletonList("Аккаунт успешно активирован!");
     }
 
-    public List<String> registerUser(Developer developer) throws MessagingException {
+    public void registerUser(Developer developer) throws MessagingException {
         developer.setActivationToken(UUID.randomUUID().toString());
         developer.setPassword(passwordEncoder.encode(developer.getPassword()));
         developer.setStatus(DevStatus.PENDING);
@@ -91,7 +90,6 @@ public class DeveloperService {
                 "&token=" + developer.getActivationToken();
         emailService.sendActivationEmail(developer.getEmail(), activationLink);
 
-        return Collections.singletonList("Регистрация прошла успешно, проверьте свою электронную почту для активации аккаунта");
     }
 
 

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,7 +26,6 @@ public class Task {
     @Column(name = "description")
     private String description;
 
-
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
@@ -37,10 +35,6 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TaskStatus status;
-
-    @ManyToOne
-    @JoinColumn(name = "report_id", referencedColumnName = "id")
-    private Report report;
 
     @ManyToOne
     @JoinColumn(name = "developer_id", referencedColumnName = "id")

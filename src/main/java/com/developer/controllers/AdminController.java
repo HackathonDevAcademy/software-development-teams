@@ -1,15 +1,12 @@
 package com.developer.controllers;
 
-import com.developer.dto.DeveloperDTO;
-import com.developer.dto.ReportDTO;
+import com.developer.dto.DeveloperDTOForAdmin;
 import com.developer.dto.TaskDTO;
 import com.developer.dto.TeamDTO;
-import com.developer.mapper.DeveloperMapper;
-import com.developer.mapper.ReportMapper;
+import com.developer.mapper.DeveloperDTOForAdminMapper;
 import com.developer.mapper.TaskMapper;
 import com.developer.mapper.TeamMapper;
 import com.developer.services.DeveloperService;
-import com.developer.services.ReportService;
 import com.developer.services.TaskService;
 import com.developer.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +20,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 public class AdminController {
     private final DeveloperService developerService;
-    private final DeveloperMapper developerMapper;
-    private final ReportService reportService;
-    private final ReportMapper reportMapper;
+    private final DeveloperDTOForAdminMapper developerMapper;
     private final TeamService teamService;
     private final TeamMapper teamMapper;
     private final TaskService taskService;
     private final TaskMapper taskMapper;
 
     @Autowired
-    public AdminController(DeveloperService developerService, DeveloperMapper developerMapper,
-                           ReportService reportService, ReportMapper reportMapper, TeamService teamService,
-                           TeamMapper teamMapper, TaskService taskService, TaskMapper taskMapper) {
+    public AdminController(DeveloperService developerService, DeveloperDTOForAdminMapper developerMapper,
+                           TeamService teamService, TeamMapper teamMapper,
+                           TaskService taskService, TaskMapper taskMapper) {
         this.developerService = developerService;
         this.developerMapper = developerMapper;
-        this.reportService = reportService;
-        this.reportMapper = reportMapper;
         this.teamService = teamService;
         this.teamMapper = teamMapper;
         this.taskService = taskService;
@@ -46,27 +39,20 @@ public class AdminController {
     }
 
     @GetMapping("/developer/all")
-    public List<DeveloperDTO> getAllDevelopers() {
+    public List<DeveloperDTOForAdmin> getAllDevelopers() {
         return developerService.getAllDevelopers().stream().map(
                 developerMapper::convertToDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping("/developer/{id}")
+    public DeveloperDTOForAdmin getDeveloperById(@PathVariable Long id) {
+        return developerMapper.convertToDTO(developerService.getDeveloperById(id));
     }
 
     @DeleteMapping("/developer/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Long deleteDeveloperById(@PathVariable Long id) {
         return developerService.deleteDeveloperById(id);
-    }
-
-    @GetMapping("/report/all")
-    public List<ReportDTO> getAllReports() {
-        return reportService.findAll().stream().map(
-                reportMapper::convertToDTO).collect(Collectors.toList());
-    }
-
-    @DeleteMapping("/report/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Long deleteReportById(@PathVariable Long id) {
-        return reportService.deleteById(id);
     }
 
     @GetMapping("/team/all")

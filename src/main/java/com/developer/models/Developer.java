@@ -55,9 +55,5 @@ public class Developer {
     private Team team;
 
     @OneToMany(mappedBy = "developer")
-    private List<Report> reports;
-
-    @OneToMany(mappedBy = "developer")
     private List<Task> tasks;
-
 }
