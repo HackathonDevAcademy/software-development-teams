@@ -47,7 +47,7 @@ public class Developer {
     @Column(name = "status")
     private DevStatus status;
 
-    @Column(name = "activaton_token")
+    @Column(name = "activation_token")
     private String activationToken;
 
     @ManyToOne

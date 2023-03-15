@@ -7,6 +7,7 @@ import com.developer.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +30,7 @@ public class TeamService {
     }
 
     public Long saveTeam(Team team) {
+        team.setDevelopers(new ArrayList<>());
         return teamRepository.save(team).getId();
     }
 
@@ -55,20 +57,26 @@ public class TeamService {
     public Boolean addDev(Long devId, Long teamId) {
         Developer developer = developerRepository.findById(devId).orElse(null);
         Team team = teamRepository.findById(teamId).orElse(null);
-        if (developer == null || team == null)
+        if (developer == null || team == null || team.getDevelopers().contains(developer))
             return false;
 
+        developer.setTeam(team);
         team.getDevelopers().add(developer);
+        teamRepository.save(team);
         return true;
     }
 
     public Boolean deleteDev(Long devId, Long teamId) {
         Developer developer = developerRepository.findById(devId).orElse(null);
         Team team = teamRepository.findById(teamId).orElse(null);
-        if (!team.getDevelopers().isEmpty())
-            return team.getDevelopers().remove(developer);
 
-        return false;
+        if (developer == null || team == null || !team.getDevelopers().contains(developer))
+            return false;
+
+        developer.setTeam(null);
+        team.getDevelopers().remove(developer);
+        teamRepository.save(team);
+        return true;
     }
 
 }

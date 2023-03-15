@@ -87,12 +87,12 @@ public class AdminController {
         return teamService.saveTeam(teamMapper.convertToEntity(teamDTO));
     }
 
-    @GetMapping("/team/addDev/{devId}/{teamId}")
+    @PutMapping("/team/addDev/{devId}/{teamId}")
     public Boolean addDevForTeam(@PathVariable Long devId, @PathVariable Long teamId) {
         return teamService.addDev(devId, teamId);
     }
 
-    @GetMapping("/team/deleteDev/{devId}/{teamId}")
+    @PutMapping("/team/deleteDev/{devId}/{teamId}")
     public Boolean deleteDevForTeam(@PathVariable Long devId, @PathVariable Long teamId) {
         return teamService.deleteDev(devId, teamId);
     }

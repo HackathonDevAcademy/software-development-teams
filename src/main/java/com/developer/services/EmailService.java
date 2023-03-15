@@ -25,11 +25,17 @@ public class EmailService {
 
         helper.setTo(email);
         helper.setSubject("Активация аккаунта");
-        helper.setFrom("test@alanbinu.com");
+//        helper.setFrom("test@alanbinu.com");
 
-        String text = "<html><body>Благодарим Вас за регистрацию на нашем сайте" +
-                "<br>Для активации аккаунта нажмите на кнопку:<br>" +
-                "<a href=\"" + activationLink + "\">" + "Активировать аккаунт" + "</a></body></html>";
+        String text = "<html>" +
+                "<body>" +
+                "Благодарим Вас за регистрацию на нашем сайте" +
+                "<br>" +
+                "Для активации аккаунта нажмите на кнопку:" +
+                "<br>" +
+                "<h3><a href=\"" + activationLink + "\">" + "Активировать аккаунт" + "</a></h3>" +
+                "</body>" +
+                "</html>";
 
         helper.setText(text, true);
 
