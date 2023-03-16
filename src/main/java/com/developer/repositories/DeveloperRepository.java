@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface DeveloperRepository extends JpaRepository<Developer, Long> {
     Optional<Developer> findByEmail(String email);
     List<Developer> findByTeamIdAndStatus(Long id, DevStatus devStatus);
+    Developer findByResetToken(String resetToken);
 }
 

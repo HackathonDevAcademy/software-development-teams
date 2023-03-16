@@ -10,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -49,6 +50,12 @@ public class Developer {
 
     @Column(name = "activation_token")
     private String activationToken;
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expire_time")
+    private LocalDateTime resetTokenExpireTime;
 
     @ManyToOne
     @JoinColumn(name = "team_id", referencedColumnName = "id")

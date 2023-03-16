@@ -5,10 +5,12 @@ import com.developer.enums.Role;
 import com.developer.models.Developer;
 import com.developer.repositories.DeveloperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -89,8 +91,38 @@ public class DeveloperService {
         String activationLink = "http://localhost:8080/activate?email=" + developer.getEmail() +
                 "&token=" + developer.getActivationToken();
         emailService.sendActivationEmail(developer.getEmail(), activationLink);
-
     }
 
+    public ResponseEntity<?> resetPassword(String email) {
+        Optional<Developer> developer = developerRepository.findByEmail(email);
+        if (developer.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String resetToken = UUID.randomUUID().toString();
+        developer.get().setResetToken(resetToken);
+        developer.get().setResetTokenExpireTime(LocalDateTime.now().plusMinutes(30)); // установка срока действия токена
+        developerRepository.save(developer.get());
+
+        String resetUrl = "http://localhost:8080/api/password/reset/" + resetToken;
+        String emailText = "Для сброса пароля перейдите по ссылке: " + resetUrl;
+
+        emailService.sendSimpleMessage(email, "Сброс пароля", emailText);
+
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<?> saveNewPassword(String resetToken, String newPassword) {
+        Developer developer = developerRepository.findByResetToken(resetToken);
+        if (developer == null || developer.getResetTokenExpireTime().isBefore(LocalDateTime.now()))
+            return ResponseEntity.badRequest().build();
+
+        developer.setPassword(passwordEncoder.encode(newPassword));
+        developer.setResetToken(null);
+        developer.setResetTokenExpireTime(null);
+        developerRepository.save(developer);
+
+        return ResponseEntity.ok().build();
+    }
 
 }
