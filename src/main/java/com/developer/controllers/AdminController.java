@@ -9,11 +9,15 @@ import com.developer.mapper.TeamMapper;
 import com.developer.services.DeveloperService;
 import com.developer.services.TaskService;
 import com.developer.services.TeamService;
+import com.itextpdf.text.DocumentException;
+import com.sun.xml.bind.v2.runtime.BinderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +75,10 @@ public class AdminController {
 
     @PostMapping("/team/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long saveTeam(@RequestBody TeamDTO teamDTO) {
+    public Long saveTeam(@RequestBody @Valid TeamDTO teamDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return null;
+
         return teamService.saveTeam(teamMapper.convertToEntity(teamDTO));
     }
 
@@ -109,4 +116,12 @@ public class AdminController {
 
         return taskService.exportToExcel(taskService.createReport(startDate, endDate));
     }
+
+    @GetMapping("/task/report/pdf")
+    public ResponseEntity<byte[]> exportToPdf(@RequestParam String startDate,
+                                              @RequestParam String endDate) throws DocumentException {
+
+        return taskService.exportToPDF(taskService.createReport(startDate, endDate));
+    }
+
 }

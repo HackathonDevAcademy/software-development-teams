@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class LoggingAspect {
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    //    @Before("@annotation(com.developer.annotations.Loggable)")
     @Before("execution(* com.developer.controllers.*.*(..))")
     public void logBeforeMethodExecution(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();

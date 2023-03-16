@@ -1,5 +1,7 @@
 package com.developer.services;
 
+import com.developer.exceptions.DeveloperNotFoundException;
+import com.developer.exceptions.TeamNotFountException;
 import com.developer.models.Developer;
 import com.developer.models.Team;
 import com.developer.repositories.DeveloperRepository;
@@ -26,7 +28,7 @@ public class TeamService {
     }
 
     public Team getTeamById(Long id) {
-        return teamRepository.findById(id).orElse(null);
+        return teamRepository.findById(id).orElseThrow(TeamNotFountException::new);
     }
 
     public Long saveTeam(Team team) {
@@ -40,7 +42,7 @@ public class TeamService {
     }
 
     public Long updateTeam(Long id, Team team) {
-        Team existingTeam = teamRepository.findById(id).orElse(null);
+        Team existingTeam = teamRepository.findById(id).orElseThrow(TeamNotFountException::new);
         if (existingTeam == null)
             return null;
 
@@ -54,8 +56,8 @@ public class TeamService {
     }
 
     public Boolean addDev(Long devId, Long teamId) {
-        Developer developer = developerRepository.findById(devId).orElse(null);
-        Team team = teamRepository.findById(teamId).orElse(null);
+        Developer developer = developerRepository.findById(devId).orElseThrow(DeveloperNotFoundException::new);
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFountException::new);
         if (developer == null || team == null || team.getDevelopers().contains(developer))
             return false;
 
@@ -66,8 +68,8 @@ public class TeamService {
     }
 
     public Boolean deleteDev(Long devId, Long teamId) {
-        Developer developer = developerRepository.findById(devId).orElse(null);
-        Team team = teamRepository.findById(teamId).orElse(null);
+        Developer developer = developerRepository.findById(devId).orElseThrow(DeveloperNotFoundException::new);
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFountException::new);
 
         if (developer == null || team == null || !team.getDevelopers().contains(developer))
             return false;

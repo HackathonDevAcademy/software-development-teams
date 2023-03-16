@@ -25,11 +25,10 @@ public class Developer {
     private Long id;
 
     @NotBlank(message = "Имя не может быть пустым!")
-    @Column(name = "first_name")
+    @Column(name = "full_name")
     private String fullName;
 
-    @Email(message = "Не корректный email!")
-    @NotBlank(message = "Email не может быть пустым!")
+    @Email(message = "Не корректный email!", regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     @Column(name = "email", unique = true)
     private String email;
 

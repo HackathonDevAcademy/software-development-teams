@@ -1,9 +1,15 @@
 package com.developer.services;
 
 import com.developer.enums.TaskStatus;
+import com.developer.exceptions.DeveloperNotFoundException;
+import com.developer.exceptions.TaskNotFoundException;
 import com.developer.models.Task;
 import com.developer.repositories.DeveloperRepository;
 import com.developer.repositories.TaskRepository;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +40,11 @@ public class TaskService {
     }
 
     public Task getTaskById(Long id) {
-        return taskRepository.findById(id).orElse(null);
+        return taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
     }
 
     public Long saveTask(Long id, Task task) {
-        task.setDeveloper(developerRepository.findById(id).orElse(null));
+        task.setDeveloper(developerRepository.findById(id).orElseThrow(DeveloperNotFoundException::new));
         task.setStatus(TaskStatus.NEW);
         return taskRepository.save(task).getId();
     }
@@ -49,8 +55,8 @@ public class TaskService {
     }
 
     public Long updateTask(Long id, Task newTask) {
-        Task taskToUpdate = taskRepository.findById(id).orElse(null);
-        if(taskToUpdate == null)
+        Task taskToUpdate = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        if (taskToUpdate == null)
             return null;
 
         taskToUpdate.setTitle(newTask.getTitle());
@@ -121,11 +127,59 @@ public class TaskService {
         workbook.write(outputStream);
 
 
+        String fileName = "report on tasks " +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
         // Формируем ответ с файлом Excel
         byte[] bytes = outputStream.toByteArray();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", "reports.xlsx");
+        headers.setContentDispositionFormData("attachment", fileName + ".xlsx");
+        headers.setContentLength(bytes.length);
+        return new ResponseEntity<>(bytes, headers, 200);
+    }
+
+    public ResponseEntity<byte[]> exportToPDF(List<Task> tasks) throws DocumentException {
+        // Создаем документ PDF
+        Document document = new Document();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, outputStream);
+        document.open();
+
+        // Создаем таблицу и задаем заголовки столбцов
+        PdfPTable table = new PdfPTable(7);
+        table.setWidths(new int[]{1, 2, 3, 2, 2, 1, 2});
+        table.addCell("ID");
+        table.addCell("Title");
+        table.addCell("Description");
+        table.addCell("Start_date");
+        table.addCell("End_date");
+        table.addCell("Status");
+        table.addCell("Owner");
+
+        // Заполняем таблицу данными
+        for (Task task : tasks) {
+            table.addCell(String.valueOf(task.getId()));
+            table.addCell(task.getTitle());
+            table.addCell(task.getDescription());
+            table.addCell(task.getStartDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+            table.addCell(task.getEndDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
+            table.addCell(String.valueOf(task.getStatus()));
+            table.addCell(task.getDeveloper().getFullName());
+        }
+
+        // Добавляем таблицу в документ PDF
+        document.add(table);
+        document.close();
+
+        String fileName = "report on tasks " +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        // Формируем ответ с файлом PDF
+        byte[] bytes = outputStream.toByteArray();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", fileName + ".pdf");
         headers.setContentLength(bytes.length);
         return new ResponseEntity<>(bytes, headers, 200);
     }

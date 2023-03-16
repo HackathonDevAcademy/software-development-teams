@@ -10,12 +10,16 @@ import lombok.Data;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Data
 public class TaskDTO {
+    @NotBlank(message = "Заголовок задачи не может быть пустым!")
     private String title;
     private String description;
+    @NotEmpty(message = "Дата начала задачи не назначена!")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

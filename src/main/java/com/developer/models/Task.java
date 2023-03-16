@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,12 +22,14 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Заголовок задачи не может быть пустым!")
     @Column(name = "title")
     private String title;
 
     @Column(name = "description")
     private String description;
 
+    @NotEmpty(message = "Дата начала задачи не назначена!")
     @Column(name = "start_date")
     private LocalDateTime startDate;
 

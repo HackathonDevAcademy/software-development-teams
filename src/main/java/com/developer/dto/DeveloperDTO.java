@@ -10,8 +10,7 @@ public class DeveloperDTO {
     @NotBlank(message = "Имя не может быть пустым!")
     private String fullName;
 
-    @Email(message = "Не корректный email!")
-    @NotBlank(message = "Email не может быть пустым!")
+    @Email(message = "Не корректный email!", regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     private String email;
 
     @NotBlank(message = "Пароль не может быть пустым!")

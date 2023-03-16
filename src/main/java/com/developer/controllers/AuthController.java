@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AuthController {
 
@@ -50,7 +49,7 @@ public class AuthController {
                                             BindingResult bindingResult) throws MessagingException {
         developerValidator.validate(developerMapper.convertToEntity(developerDTO), bindingResult);
         if (bindingResult.hasErrors())
-            return Map.of("message", "Ошибка!");
+            return Map.of("message", bindingResult.getFieldErrors().toString());
 
         developerService.registerUser(developerMapper.convertToEntity(developerDTO));
 

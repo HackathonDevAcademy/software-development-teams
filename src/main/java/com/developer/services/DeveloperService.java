@@ -2,8 +2,11 @@ package com.developer.services;
 
 import com.developer.enums.DevStatus;
 import com.developer.enums.Role;
+import com.developer.exceptions.DeveloperNotFoundException;
+import com.developer.exceptions.TeamNotFountException;
 import com.developer.models.Developer;
 import com.developer.repositories.DeveloperRepository;
+import com.developer.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,12 +22,14 @@ import java.util.UUID;
 @Service
 public class DeveloperService {
     private final DeveloperRepository developerRepository;
+    private final TeamRepository teamRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
     @Autowired
-    public DeveloperService(DeveloperRepository developerRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public DeveloperService(DeveloperRepository developerRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.developerRepository = developerRepository;
+        this.teamRepository = teamRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
@@ -34,11 +39,11 @@ public class DeveloperService {
     }
 
     public Developer getDeveloperById(Long id) {
-        return developerRepository.findById(id).orElse(null);
+        return developerRepository.findById(id).orElseThrow(DeveloperNotFoundException::new);
     }
 
     public Long deleteDeveloperById(Long id) {
-        Developer developer = developerRepository.findById(id).orElse(null);
+        Developer developer = developerRepository.findById(id).orElseThrow(DeveloperNotFoundException::new);
         if (developer == null)
             return null;
 
@@ -47,7 +52,7 @@ public class DeveloperService {
     }
 
     public Long updateDeveloper(Long id, Developer developer) {
-        Developer existingDeveloper = developerRepository.findById(id).orElse(null);
+        Developer existingDeveloper = developerRepository.findById(id).orElseThrow(DeveloperNotFoundException::new);
         if (existingDeveloper == null)
             return null;
 
@@ -63,6 +68,7 @@ public class DeveloperService {
     }
 
     public List<Developer> findByTeamId(Long id) {
+        teamRepository.findById(id).orElseThrow(TeamNotFountException::new);
         return developerRepository.findByTeamIdAndStatus(id, DevStatus.ACTIVE);
     }
 
@@ -70,7 +76,7 @@ public class DeveloperService {
         Optional<Developer> developer = developerRepository.findByEmail(email);
 
         if (developer.isEmpty())
-            return Collections.singletonList("Пользователь с таким email не найден");
+            throw new DeveloperNotFoundException();
 
         if (!developer.get().getActivationToken().equals(token))
             return Collections.singletonList("Неправильный токен активации");
