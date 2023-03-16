@@ -2,7 +2,9 @@ package com.developer.controllers;
 
 import com.developer.dto.AuthenticationDTO;
 import com.developer.dto.DeveloperDTO;
+import com.developer.enums.DevStatus;
 import com.developer.mapper.DeveloperMapper;
+import com.developer.models.Developer;
 import com.developer.security.JWTUtil;
 import com.developer.services.DeveloperService;
 import com.developer.util.DeveloperValidator;
@@ -17,6 +19,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 //@CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -46,7 +49,7 @@ public class AuthController {
     public Map<String, String> registerUser(@RequestBody @Valid DeveloperDTO developerDTO,
                                             BindingResult bindingResult) throws MessagingException {
         developerValidator.validate(developerMapper.convertToEntity(developerDTO), bindingResult);
-        if(bindingResult.hasErrors())
+        if (bindingResult.hasErrors())
             return Map.of("message", "Ошибка!");
 
         developerService.registerUser(developerMapper.convertToEntity(developerDTO));
@@ -57,6 +60,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
+        Optional<Developer> developer = developerService.findByEmail(authenticationDTO.getUsername());
+
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(),
                         authenticationDTO.getPassword());
@@ -66,6 +71,9 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             return Map.of("message", "Incorrect credentials!");
         }
+
+        if (developer.get().getStatus() != DevStatus.ACTIVE)
+            return Map.of("message", "User is not active!");
 
         String token = jwtUtil.generateToken(authenticationDTO.getUsername());
         return Map.of("jwt-token", token);

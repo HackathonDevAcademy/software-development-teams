@@ -11,8 +11,10 @@ import com.developer.services.TaskService;
 import com.developer.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,4 +96,17 @@ public class AdminController {
         return taskService.deleteTask(id);
     }
 
+    @GetMapping("/task/report")
+    public List<TaskDTO> createReport(@RequestParam String startDate,
+                                      @RequestParam String endDate) {
+        return taskService.createReport(startDate, endDate).stream().map(
+                taskMapper::convertToDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping("/task/report/excel")
+    public ResponseEntity<byte[]> exportToExcel(@RequestParam String startDate,
+                                                @RequestParam String endDate) throws IOException {
+
+        return taskService.exportToExcel(taskService.createReport(startDate, endDate));
+    }
 }

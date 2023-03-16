@@ -67,8 +67,11 @@ public class TaskService {
         return taskRepository.createReport(startDate, endDate);
     }
 
-    public ResponseEntity<byte[]> exportToExcel(String startDate, String endDate) throws IOException {
-        List<Task> tasks = taskRepository.createReport(startDate, endDate);
+    public List<Task> createReportByDevId(Long id, String startDate, String endDate) {
+        return taskRepository.createReportByDevId(id, startDate, endDate);
+    }
+
+    public ResponseEntity<byte[]> exportToExcel(List<Task> tasks) throws IOException {
         // Создаем книгу Excel
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Reports");

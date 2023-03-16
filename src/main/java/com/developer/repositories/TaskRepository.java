@@ -16,4 +16,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query(value = "SELECT * FROM task WHERE start_date >= CAST(:startDate AS timestamp) AND end_date <= CAST(:endDate AS timestamp)", nativeQuery = true)
     List<Task> createReport(String startDate, String endDate);
+
+    @Query(value = "SELECT * FROM task WHERE developer_id = :id AND start_date >= CAST(:startDate AS timestamp) AND end_date <= CAST(:endDate AS timestamp)", nativeQuery = true)
+    List<Task> createReportByDevId(Long id, String startDate, String endDate);
 }
