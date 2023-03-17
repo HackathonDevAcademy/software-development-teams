@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,7 +81,7 @@ public class AdminController {
 
     @PostMapping("/team/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long saveTeam(@RequestBody TeamDTO teamDTO) {
+    public Long saveTeam(@RequestBody @Valid TeamDTO teamDTO) {
         return teamService.saveTeam(teamMapper.convertToEntity(teamDTO));
     }
 

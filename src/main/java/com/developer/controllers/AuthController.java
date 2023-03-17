@@ -58,7 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
+    public Map<String, String> performLogin(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
         Optional<Developer> developer = developerService.findByEmail(authenticationDTO.getUsername());
 
         UsernamePasswordAuthenticationToken authInputToken =

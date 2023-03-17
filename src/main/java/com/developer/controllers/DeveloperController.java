@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class DeveloperController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public Long updateDeveloper(@AuthenticationPrincipal DeveloperDetails developerDetails, @RequestBody DeveloperDTO developerDTO) {
+    public Long updateDeveloper(@AuthenticationPrincipal DeveloperDetails developerDetails, @RequestBody @Valid DeveloperDTO developerDTO) {
         return developerService.updateDeveloper(developerDetails.getDeveloper().getId(),
                 developerMapper.convertToEntity(developerDTO));
     }

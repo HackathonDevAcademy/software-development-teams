@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/team")
 public class TeamController {
@@ -35,7 +37,7 @@ public class TeamController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Long updateTeam(@PathVariable Long id, @RequestBody TeamDTO teamDTO) {
+    public Long updateTeam(@PathVariable Long id, @RequestBody @Valid TeamDTO teamDTO) {
         return teamService.updateTeam(id, teamMapper.convertToEntity(teamDTO));
     }
 

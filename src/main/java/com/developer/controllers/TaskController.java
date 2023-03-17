@@ -7,6 +7,8 @@ import com.developer.services.TaskService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/task")
 public class TaskController {
@@ -24,7 +26,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public Long createTask(@RequestBody TaskDTO taskDTO,
+    public Long createTask(@RequestBody @Valid TaskDTO taskDTO,
                            @AuthenticationPrincipal DeveloperDetails developerDetails) {
 
         return taskService.saveTask(developerDetails.getDeveloper().getId(),
@@ -32,8 +34,10 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public Long updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
+    public Long updateTask(@PathVariable Long id, @RequestBody @Valid TaskDTO taskDTO) {
         return taskService.updateTask(id, taskMapper.convertToEntity(taskDTO));
     }
+
+
 
 }

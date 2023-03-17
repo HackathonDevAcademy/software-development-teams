@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ public class ReportController {
     }
 
     @PostMapping("/create")
-    public List<TaskDTO> createReport(@RequestBody ReportDTO reportDTO,
+    public List<TaskDTO> createReport(@RequestBody @Valid ReportDTO reportDTO,
                                       @AuthenticationPrincipal DeveloperDetails developerDetails) {
         Report report = reportMapper.convertToEntity(reportDTO);
         return reportService.createReportByDevId(developerDetails.getDeveloper().getId(), report)
