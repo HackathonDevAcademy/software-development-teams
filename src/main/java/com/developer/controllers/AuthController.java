@@ -71,7 +71,7 @@ public class AuthController {
             return Map.of("message", "Incorrect credentials!");
         }
 
-        if (developer.get().getStatus() != DevStatus.ACTIVE)
+        if (developer.isEmpty() || developer.get().getStatus() != DevStatus.ACTIVE)
             return Map.of("message", "User is not active!");
 
         String token = jwtUtil.generateToken(authenticationDTO.getUsername());

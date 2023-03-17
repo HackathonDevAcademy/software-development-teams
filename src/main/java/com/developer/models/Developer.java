@@ -62,4 +62,7 @@ public class Developer {
 
     @OneToMany(mappedBy = "developer")
     private List<Task> tasks;
+
+    @OneToMany(mappedBy = "developer")
+    private List<Report> reports;
 }

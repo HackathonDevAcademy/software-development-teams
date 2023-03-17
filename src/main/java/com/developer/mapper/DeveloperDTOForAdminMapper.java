@@ -1,6 +1,5 @@
 package com.developer.mapper;
 
-import com.developer.dto.DeveloperDTO;
 import com.developer.dto.DeveloperDTOForAdmin;
 import com.developer.models.Developer;
 import org.modelmapper.ModelMapper;

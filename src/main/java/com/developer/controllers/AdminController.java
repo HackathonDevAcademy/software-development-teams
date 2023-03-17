@@ -1,23 +1,24 @@
 package com.developer.controllers;
 
 import com.developer.dto.DeveloperDTOForAdmin;
+import com.developer.dto.ReportDTO;
 import com.developer.dto.TaskDTO;
 import com.developer.dto.TeamDTO;
 import com.developer.mapper.DeveloperDTOForAdminMapper;
+import com.developer.mapper.ReportMapper;
 import com.developer.mapper.TaskMapper;
 import com.developer.mapper.TeamMapper;
+import com.developer.models.Report;
 import com.developer.services.DeveloperService;
+import com.developer.services.ReportService;
 import com.developer.services.TaskService;
 import com.developer.services.TeamService;
 import com.itextpdf.text.DocumentException;
-import com.sun.xml.bind.v2.runtime.BinderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,17 +32,21 @@ public class AdminController {
     private final TeamMapper teamMapper;
     private final TaskService taskService;
     private final TaskMapper taskMapper;
+    private final ReportService reportService;
+    private final ReportMapper reportMapper;
 
     @Autowired
     public AdminController(DeveloperService developerService, DeveloperDTOForAdminMapper developerMapper,
                            TeamService teamService, TeamMapper teamMapper,
-                           TaskService taskService, TaskMapper taskMapper) {
+                           TaskService taskService, TaskMapper taskMapper, ReportService reportService, ReportMapper reportMapper) {
         this.developerService = developerService;
         this.developerMapper = developerMapper;
         this.teamService = teamService;
         this.teamMapper = teamMapper;
         this.taskService = taskService;
         this.taskMapper = taskMapper;
+        this.reportService = reportService;
+        this.reportMapper = reportMapper;
     }
 
     @GetMapping("/developer/all")
@@ -75,10 +80,7 @@ public class AdminController {
 
     @PostMapping("/team/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long saveTeam(@RequestBody @Valid TeamDTO teamDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return null;
-
+    public Long saveTeam(@RequestBody TeamDTO teamDTO) {
         return teamService.saveTeam(teamMapper.convertToEntity(teamDTO));
     }
 
@@ -103,25 +105,36 @@ public class AdminController {
         return taskService.deleteTask(id);
     }
 
-    @GetMapping("/task/report")
-    public List<TaskDTO> createReport(@RequestParam String startDate,
-                                      @RequestParam String endDate) {
-        return taskService.createReport(startDate, endDate).stream().map(
+    @GetMapping("/report/all")
+    public List<ReportDTO> getAllReport() {
+        return reportService.getAllReport().stream()
+                .map(reportMapper::convertToDTO).collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/report/{id}")
+    public Long deleteReport(@PathVariable Long id) {
+        return reportService.delete(id);
+    }
+
+    @GetMapping("/report/view")
+    public List<TaskDTO> createReport(@RequestBody ReportDTO reportDTO) {
+        Report report = reportMapper.convertToEntity(reportDTO);
+        return reportService.createReport(report).stream().map(
                 taskMapper::convertToDTO).collect(Collectors.toList());
     }
 
-    @GetMapping("/task/report/excel")
+    @GetMapping("/report/excel")
     public ResponseEntity<byte[]> exportToExcel(@RequestParam String startDate,
                                                 @RequestParam String endDate) throws IOException {
 
-        return taskService.exportToExcel(taskService.createReport(startDate, endDate));
+        return reportService.exportToExcel(reportService.reportForExportAllDevs(startDate, endDate));
     }
 
-    @GetMapping("/task/report/pdf")
+    @GetMapping("/report/pdf")
     public ResponseEntity<byte[]> exportToPdf(@RequestParam String startDate,
                                               @RequestParam String endDate) throws DocumentException {
 
-        return taskService.exportToPDF(taskService.createReport(startDate, endDate));
+        return reportService.exportToPDF(reportService.reportForExportAllDevs(startDate, endDate));
     }
 
 }

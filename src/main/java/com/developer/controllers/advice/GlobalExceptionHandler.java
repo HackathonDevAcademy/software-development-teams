@@ -15,13 +15,15 @@ public class GlobalExceptionHandler {
     private final DeveloperErrorResponse developerErrorResponse;
     private final TeamErrorResponse teamErrorResponse;
     private final TaskErrorResponse taskErrorResponse;
+    private final ReportErrorResponse reportErrorResponse;
 
     @Autowired
     public GlobalExceptionHandler(DeveloperErrorResponse developerErrorResponse,
-                                  TeamErrorResponse teamErrorResponse, TaskErrorResponse taskErrorResponse) {
+                                  TeamErrorResponse teamErrorResponse, TaskErrorResponse taskErrorResponse, ReportErrorResponse reportErrorResponse) {
         this.developerErrorResponse = developerErrorResponse;
         this.teamErrorResponse = teamErrorResponse;
         this.taskErrorResponse = taskErrorResponse;
+        this.reportErrorResponse = reportErrorResponse;
     }
 
     @ExceptionHandler
@@ -47,4 +49,13 @@ public class GlobalExceptionHandler {
                 DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
         return new ResponseEntity<>(taskErrorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    private ResponseEntity<ReportErrorResponse> handleException(ReportNotFoundException e) {
+        reportErrorResponse.setMessage("Отчет с таким id не найден!");
+        reportErrorResponse.setTimestamp(LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+        return new ResponseEntity<>(reportErrorResponse, HttpStatus.NOT_FOUND);
+    }
+
 }

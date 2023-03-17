@@ -1,4 +1,4 @@
-INSERT INTO team(description, name)
+INSERT INTO team(name, description)
 VALUES ('PostgreSQL Development Team',
         'The team responsible for the development of the PostgreSQL database management system.'),
        ('pgAdmin Development Team',

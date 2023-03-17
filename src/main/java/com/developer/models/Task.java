@@ -8,8 +8,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "task")
@@ -29,7 +30,7 @@ public class Task {
     @Column(name = "description")
     private String description;
 
-    @NotEmpty(message = "Дата начала задачи не назначена!")
+    @NotNull(message = "Дата начала задачи не назначена!")
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
@@ -43,5 +44,13 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "developer_id", referencedColumnName = "id")
     private Developer developer;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Task_report",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "report_id")
+    )
+    private List<Report> reports;
 }
 
